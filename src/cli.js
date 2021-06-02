@@ -7,6 +7,7 @@ import { handleJsonFileInBoth, handleNormalFileInBoth, handleFileOnlyInBoilerpla
 import { buildFileList, defaultJsonGlobs, defaultPatterns, helpMessage, splitFileList } from './util.js'
 
 const cli = meow(helpMessage, {
+	importMeta: import.meta,
 	flags: {
 		includePattern: {
 			type: 'string',
