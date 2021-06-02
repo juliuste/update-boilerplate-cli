@@ -1,0 +1,41 @@
+{
+	"name": "update-boilerplate-cli",
+	"version": "0.0.0",
+	"description": "TODO",
+	"keywords": [
+		"TODO"
+	],
+	"bugs": "https://github.com/juliuste/update-boilerplate-cli/issues",
+	"repository": "juliuste/update-boilerplate-cli",
+	"license": "ISC",
+	"author": "Julius Tens <mail@juliustens.eu>",
+	"type": "module",
+	"bin": {
+		"update-boilerplate": "src/cli.js"
+	},
+	"files": [
+		"src/*"
+	],
+	"scripts": {
+		"check-deps": "depcheck",
+		"fix": "npm run lint -- --fix",
+		"lint": "eslint src test.js",
+		"test": "npm run lint && npm run check-deps && ava"
+	},
+	"dependencies": {
+		"meow": "^9.0.0"
+	},
+	"devDependencies": {
+		"ava": "^3.15.0",
+		"depcheck": "^1.4.1",
+		"eslint": "^7.27.0",
+		"eslint-config-standard": "^16.0.3",
+		"eslint-plugin-import": "^2.23.4",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-promise": "^5.1.0",
+		"execa": "^5.0.0"
+	},
+	"engines": {
+		"node": ">=14"
+	}
+}
