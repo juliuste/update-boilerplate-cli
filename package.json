@@ -1,6 +1,6 @@
 {
 	"name": "update-boilerplate-cli",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"description": "CLI for updating projects to your latest boilerplate.",
 	"keywords": [
 		"boilerplate",
