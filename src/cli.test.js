@@ -1,12 +1,12 @@
 import test from 'ava'
 import execa from 'execa'
 import fs from 'fs'
-import globby from 'globby'
+import { globby } from 'globby'
 import path from 'path'
 import pify from 'pify'
 import tmp from 'tmp'
-import loadJSON from 'load-json-file'
-import writeJSON from 'write-json-file'
+import { loadJsonFile as loadJSON } from 'load-json-file'
+import { writeJsonFile as writeJSON } from 'write-json-file'
 
 const tmpDirP = pify(tmp.dir)
 

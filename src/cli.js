@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import chalk from 'chalk'
-import globby from 'globby'
+import { globby } from 'globby'
 import meow from 'meow'
 import path from 'path'
 import { handleJsonFileInBoth, handleNormalFileInBoth, handleFileOnlyInBoilerplate, handleFileOnlyInCwd } from './handle-file.js'
