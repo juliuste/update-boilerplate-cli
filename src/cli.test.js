@@ -1,5 +1,5 @@
 import test from 'ava'
-import execa from 'execa'
+import { execa } from 'execa'
 import fs from 'fs'
 import { globby } from 'globby'
 import path from 'path'

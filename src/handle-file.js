@@ -7,7 +7,7 @@ import isEqual from 'lodash/isEqual.js'
 import fs from 'fs'
 import path from 'path'
 import { diff as jsonDiff } from 'just-diff'
-import jsonDiffApply from 'just-diff-apply'
+import { diffApply as jsonDiffApply } from 'just-diff-apply'
 import { YesNoPrompt, YesNoPromptWithTemporaryText } from './prompt.js'
 
 const clone = (x) => JSON.parse(JSON.stringify(x))
@@ -69,7 +69,7 @@ export const createHandleJsonFileInBoth = (promptFn, loadJSONFn, writeJSONFn) =>
 			initial: false,
 			temporaryText: gitDiff(before, after, { color: true }),
 		})
-		if (shouldApply) jsonDiffApply.diffApply(finalVersion, [operation])
+		if (shouldApply) jsonDiffApply(finalVersion, [operation])
 	}
 	// todo: confirm again?
 	if (!isEqual(finalVersion, cwdContent)) await writeJSONFn(file.cwdPath, finalVersion)
