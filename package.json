@@ -41,6 +41,7 @@
 		"just-diff-apply": "5.3.1",
 		"load-json-file": "^7.0.1",
 		"lodash": "^4.17.21",
+		"matcher": "^5.0.0",
 		"meow": "^10.1.2",
 		"micromatch": "^4.0.5",
 		"strip-ansi": "^7.0.1",

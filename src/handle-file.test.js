@@ -48,7 +48,7 @@ test('handleNormalFileInBoth', async t => {
 	t.is(writeFileNo.callCount, 0)
 })
 
-test('handleJsonFileInBoth', async t => {
+test('handleJsonFileInBoth (generic)', async t => {
 	const contentA = { aaa: { bbb: '123' }, ddd: 4 }
 	const contentB = { aaa: { ccc: '234' }, ddd: 5 }
 	const pathA = '/home/a/test.json'
@@ -92,6 +92,32 @@ test('handleJsonFileInBoth', async t => {
 	await createHandleJsonFileInBoth(promptNever, readJSON, writeJSONNever)({ file: 'test.json', boilerplatePath: pathA, cwdPath: pathB, isInBoilerplate: true, isInCwd: true, isJson: true })
 	t.is(promptNever.callCount, 3)
 	t.is(writeJSONNever.callCount, 0)
+})
+
+test('handleJsonFileInBoth (package.json)', async t => {
+	const contentA = { dependencies: { bbb: '123' }, ddd: 4, eee: 5 }
+	const contentB = { dependencies: { bbb: '234' }, ddd: 5, eee: 6 }
+	const pathA = '/home/a/package.json'
+	const pathB = '/home/b/package.json'
+
+	const readJSON = sinon.fake(async (path) => (path.includes('/a/')) ? contentA : contentB)
+	const writeJSON = sinon.fake.resolves()
+	const prompt = sinon.fake(async (config) => true)
+
+	await createHandleJsonFileInBoth(prompt, readJSON, writeJSON)({ file: 'package.json', boilerplatePath: pathA, cwdPath: pathB, isInBoilerplate: true, isInCwd: true, isJson: true }, ['dependencies/*', 'eee'])
+	t.is(readJSON.callCount, 2)
+	t.deepEqual(readJSON.firstCall.args, [pathA])
+	t.deepEqual(readJSON.secondCall.args, [pathB])
+	t.is(prompt.callCount, 1)
+	t.is(prompt.firstCall.args.length, 1)
+	t.deepEqual(removeAnsi(prompt.firstCall.args[0]), {
+		initial: false,
+		name: 'shouldApply',
+		message: 'package.json > ddd: Key differs from boilerplace. Replace with boilerplate value (see diff below)?',
+		temporaryText: ['@@ -1 +1 @@', '-5', '+4', ''].join('\n'),
+	})
+	t.is(writeJSON.callCount, 1)
+	t.deepEqual(writeJSON.firstCall.args, [pathB, { ...contentB, ddd: 4 }])
 })
 
 test('handleFileOnlyInBoilerplate', async t => {

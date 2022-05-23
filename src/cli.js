@@ -4,7 +4,7 @@ import { globby } from 'globby'
 import meow from 'meow'
 import path from 'path'
 import { handleJsonFileInBoth, handleNormalFileInBoth, handleFileOnlyInBoilerplate, handleFileOnlyInCwd } from './handle-file.js'
-import { buildFileList, defaultJsonGlobs, defaultPatterns, helpMessage, splitFileList } from './util.js'
+import { buildFileList, defaultJsonGlobs, defaultPatterns, defaultPackageAttributes, helpMessage, splitFileList } from './util.js'
 
 const cli = meow(helpMessage, {
 	importMeta: import.meta,
@@ -17,6 +17,13 @@ const cli = meow(helpMessage, {
 		disableDefaultPatterns: {
 			type: 'boolean',
 			alias: 'd',
+		},
+		disableDefaultAttributes: {
+			type: 'boolean',
+		},
+		excludeAttributes: {
+			type: 'string',
+			isMultiple: true,
 		},
 		json: {
 			type: 'string',
@@ -39,6 +46,10 @@ const main = async () => {
 		...cli.flags.includePattern,
 	]
 	const jsonGlobs = cli.flags.json.length !== 0 ? cli.flags.json : defaultJsonGlobs
+	const excludedPackageAttributes = [
+		...(cli.flags.disableDefaultAttributes ? [] : defaultPackageAttributes),
+		...cli.flags.excludeAttributes,
+	]
 
 	const boilerplatePath = path.resolve(relativeBoilerplatePath)
 	const boilerplateFiles = await globby(patterns, { cwd: boilerplatePath })
@@ -53,7 +64,7 @@ const main = async () => {
 
 	for (const file of onlyInBoilerplate) { await handleFileOnlyInBoilerplate(file, cli.flags.confirmAll) }
 	for (const file of normalInBoth) { await handleNormalFileInBoth(file, cli.flags.confirmAll) }
-	for (const file of jsonInBoth) { await handleJsonFileInBoth(file, cli.flags.confirmAll) }
+	for (const file of jsonInBoth) { await handleJsonFileInBoth(file, excludedPackageAttributes, cli.flags.confirmAll) }
 	for (const file of onlyInCwd) { await handleFileOnlyInCwd(file, cli.flags.confirmAll) }
 }
 

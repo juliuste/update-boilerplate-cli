@@ -15,6 +15,15 @@ export const helpMessage = `
 	  -d, --disable--default-patterns   Disable the default matchers (**, **/.*, !**/node_modules, !**/.git),
 	                                    only use custom ones supplied via the --include option.
 
+	  --disable-default-attributes      Disable the default ignored package.json attribute path matchers
+	                                    (dependencies/*, devDependencies/*, peerDependencies/*, keywords/*),
+	                                    only use custom ones supplied via the --exclude-attributes option.
+
+	  --exclude-attributes              Globs matching attribute paths to ignore in a package.json file,
+	                                    if present. Will extend the default matchers: dependencies/*,
+	                                    devDependencies/*, peerDependencies/*, keywords/*, (see also
+	                                    --disable-default-attributes).
+
 	  -j, --json                        Patterns describing which of the included files should be processed
 	                                    as JSON files (meaning that the CLI will ask wether or not to copy
 	                                    individual keys instead of entire files). Can be used multiple times,
@@ -37,6 +46,7 @@ export const helpMessage = `
 // remember to adapt the help message when changing these lists
 export const defaultPatterns = ['**', '**/.*', '!**/node_modules', '!**/.git']
 export const defaultJsonGlobs = ['**/*.json', '**/.*.json']
+export const defaultPackageAttributes = ['dependencies/*', 'devDependencies/*', 'peerDependencies/*', 'keywords/*']
 
 export const buildFileList = (boilerplateRoot, boilerplateFiles, cwdRoot, cwdFiles, jsonGlobs) => {
 	const allRelativeNames = uniq([...boilerplateFiles, ...cwdFiles]).sort()

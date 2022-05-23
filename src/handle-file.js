@@ -8,6 +8,7 @@ import fs from 'fs'
 import path from 'path'
 import { diff as jsonDiff } from 'just-diff'
 import { diffApply as jsonDiffApply } from 'just-diff-apply'
+import { isMatch } from 'matcher'
 import { YesNoPrompt, YesNoPromptWithTemporaryText } from './prompt.js'
 
 const clone = (x) => JSON.parse(JSON.stringify(x))
@@ -35,14 +36,16 @@ export const createHandleNormalFileInBoth = (promptFn, fsReadFileFn, fsWriteFile
 }
 export const handleNormalFileInBoth = createHandleNormalFileInBoth(promptYesNoWithTemporaryText, fs.promises.readFile, fs.promises.writeFile)
 
-export const createHandleJsonFileInBoth = (promptFn, loadJSONFn, writeJSONFn) => async (file, confirmAll = false) => {
+export const createHandleJsonFileInBoth = (promptFn, loadJSONFn, writeJSONFn) => async (file, excludedPackageAttributes, confirmAll = false) => {
 	const [boilerplateContent, cwdContent] = await Promise.all([
 		loadJSONFn(file.boilerplatePath),
 		loadJSONFn(file.cwdPath),
 	])
 
+	const isPackageJson = path.basename(file.file) === 'package.json'
+
 	const finalVersion = clone(cwdContent)
-	const diff = jsonDiff(finalVersion, boilerplateContent)
+	const diff = jsonDiff(finalVersion, boilerplateContent).filter(({ path }) => !isPackageJson || !isMatch(path.join('/'), excludedPackageAttributes))
 	if (diff.length === 0) return console.log(`${chalk.underline.bold(file.file)}: Already up to date.`)
 
 	for (const operation of diff) {
